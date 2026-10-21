@@ -1,0 +1,3 @@
+$ perl -I src src/tests/threads/alarm-single.ck /home/harshit/OSGroup/OS-Pintos/pintos/evidence/baseline/alarm-single src
+[32mpass /home/harshit/OSGroup/OS-Pintos/pintos/evidence/baseline/alarm-single
+[0mexit_status=0

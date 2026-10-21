@@ -1,0 +1,32 @@
+PINTOS ORIGINAL BASELINE
+Archived source revision: ab699959f0d3eae8e59d8507ae2474a638c3d1d3
+
+Checking archived evidence and artifact hashes...
+
+ARCHIVED BUILD EVIDENCE (this is not a live rebuild)
+ld -melf_i386 -T threads/kernel.lds.s -o kernel.o threads/start.o threads/init.o threads/thread.o threads/switch.o threads/interrupt.o threads/intr-stubs.o threads/synch.o threads/palloc.o threads/malloc.o devices/pit.o devices/timer.o devices/kbd.o devices/vga.o devices/serial.o devices/block.o devices/partition.o devices/ide.o devices/input.o devices/intq.o devices/rtc.o devices/shutdown.o devices/speaker.o lib/debug.o lib/random.o lib/stdio.o lib/stdlib.o lib/string.o lib/arithmetic.o lib/ustar.o lib/kernel/debug.o lib/kernel/list.o lib/kernel/bitmap.o lib/kernel/hash.o lib/kernel/console.o tests/threads/tests.o tests/threads/alarm-wait.o tests/threads/alarm-simultaneous.o tests/threads/alarm-priority.o tests/threads/alarm-zero.o tests/threads/alarm-negative.o tests/threads/priority-change.o tests/threads/priority-donate-one.o tests/threads/priority-donate-multiple.o tests/threads/priority-donate-multiple2.o tests/threads/priority-donate-nest.o tests/threads/priority-donate-sema.o tests/threads/priority-donate-lower.o tests/threads/priority-fifo.o tests/threads/priority-preempt.o tests/threads/priority-sema.o tests/threads/priority-condvar.o tests/threads/priority-donate-chain.o tests/threads/mlfqs-load-1.o tests/threads/mlfqs-load-60.o tests/threads/mlfqs-load-avg.o tests/threads/mlfqs-recent-1.o tests/threads/mlfqs-fair.o tests/threads/mlfqs-block.o
+ld: warning: threads/intr-stubs.o: missing .note.GNU-stack section implies executable stack
+ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+objdump -S kernel.o > kernel.asm
+nm -n kernel.o > kernel.sym
+objcopy -R .note -R .comment -S kernel.o kernel.bin
+make[1]: Leaving directory '/home/harshit/OSGroup/OS-Pintos/pintos/src/threads/build'
+make: Leaving directory '/home/harshit/OSGroup/OS-Pintos/pintos/src/threads'
+
+Compatibility build exit_status=0
+artifacts/kernel.bin: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), statically linked, stripped
+artifacts/loader.bin: DOS/MBR boot sector
+
+ARCHIVED BOOT EVIDENCE (this is not a live boot)
+Pintos booting with 3,968 kB RAM...
+Boot complete.
+(alarm-single) thread 0: duration=10, iteration=1, product=10
+(alarm-single) thread 1: duration=20, iteration=1, product=20
+(alarm-single) thread 2: duration=30, iteration=1, product=30
+(alarm-single) thread 3: duration=40, iteration=1, product=40
+(alarm-single) thread 4: duration=50, iteration=1, product=50
+Execution of 'alarm-single' complete.
+Powering off...
+Upstream alarm-single checker: PASS
+
+Archive display complete; no kernel was executed.

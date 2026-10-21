@@ -1,0 +1,103 @@
+No packages installed: all needed tools were already present.
+
+$ cat /etc/os-release
+PRETTY_NAME="Ubuntu 24.04.1 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.1 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+
+exit_status=0
+
+$ uname -a
+Linux OmegaDestroyer1 6.18.54.1-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Tue Oct  6 19:13:07 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+
+exit_status=0
+
+$ gcc --version
+gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+exit_status=0
+
+$ gcc -dumpmachine
+x86_64-linux-gnu
+
+exit_status=0
+
+$ ld --version
+GNU ld (GNU Binutils for Ubuntu) 2.42
+Copyright (C) 2024 Free Software Foundation, Inc.
+This program is free software; you may redistribute it under the terms of
+the GNU General Public License version 3 or (at your option) a later version.
+This program has absolutely no warranty.
+
+exit_status=0
+
+$ make --version
+GNU Make 4.3
+Built for x86_64-pc-linux-gnu
+Copyright (C) 1988-2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+exit_status=0
+
+$ perl -v
+
+This is perl 5, version 38, subversion 2 (v5.38.2) built for x86_64-linux-gnu-thread-multi
+(with 67 registered patches, see perl -V for more detail)
+
+Copyright 1987-2023, Larry Wall
+
+Perl may be copied only under the terms of either the Artistic License or the
+GNU General Public License, which may be found in the Perl 5 source kit.
+
+Complete documentation for Perl, including FAQ lists, should be found on
+this system using "man perl" or "perldoc perl".  If you have access to the
+Internet, point your browser at https://www.perl.org/, the Perl Home Page.
+
+
+exit_status=0
+
+$ python3 --version
+Python 3.12.3
+
+exit_status=0
+
+$ qemu-system-i386 --version
+QEMU emulator version 8.2.2 (Debian 1:8.2.2+ds-0ubuntu1.17)
+Copyright (c) 2003-2023 Fabrice Bellard and the QEMU Project developers
+
+exit_status=0
+
+$ dpkg-query -W gcc gcc-multilib libc6-dev-i386 make perl python3 qemu-system-x86 binutils
+binutils	2.42-4ubuntu2.8
+gcc	4:13.2.0-7ubuntu1
+gcc-multilib	4:13.2.0-7ubuntu1
+libc6-dev-i386	2.39-0ubuntu8.9
+make	4.3-4.1build2
+perl	5.38.2-3.2ubuntu0.6
+python3	3.12.3-0ubuntu2.1
+qemu-system-x86	1:8.2.2+ds-0ubuntu1.17
+
+exit_status=0
+
+$ perl -c src/utils/pintos
+Can't locate src/utils/Pintos.pm in @INC (you may need to install the src::utils::Pintos module) (@INC entries checked: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.38.2 /usr/local/share/perl/5.38.2 /usr/lib/x86_64-linux-gnu/perl5/5.38 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl-base /usr/lib/x86_64-linux-gnu/perl/5.38 /usr/share/perl/5.38 /usr/local/lib/site_perl) at src/utils/pintos line 11.
+BEGIN failed--compilation aborted at src/utils/pintos line 11.
+
+exit_status=2
+

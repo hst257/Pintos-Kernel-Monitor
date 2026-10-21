@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "35s",
+    "/home/harshit/OSGroup/OS-Pintos/pintos/src/utils/pintos",
+    "--qemu",
+    "--no-vga",
+    "--",
+    "-q",
+    "run",
+    "alarm-single"
+  ],
+  "cwd": "/home/harshit/OSGroup/OS-Pintos/pintos/src/threads/build",
+  "exit_status": 124,
+  "elapsed_seconds": 35.05031581200001
+}

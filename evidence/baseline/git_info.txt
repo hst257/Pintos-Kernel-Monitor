@@ -1,0 +1,79 @@
+$ pwd
+/home/harshit/OSGroup/OS-Pintos/pintos
+
+exit_status=0
+
+$ git status --short --branch
+## main...origin/main
+?? evidence/
+
+exit_status=0
+
+$ git rev-parse HEAD
+ab699959f0d3eae8e59d8507ae2474a638c3d1d3
+
+exit_status=0
+
+$ git show -s --format=fuller HEAD
+commit ab699959f0d3eae8e59d8507ae2474a638c3d1d3
+Author:     Ryan Huang <huang@cs.jhu.edu>
+AuthorDate: Wed Sep 7 12:07:51 2022 -0400
+Commit:     Ryan Huang <huang@cs.jhu.edu>
+CommitDate: Wed Sep 7 12:07:51 2022 -0400
+
+    upgrade gdb to 7.12 to allow usage of latest cgdb
+
+exit_status=0
+
+$ git remote -v
+origin	https://github.com/hst257/Pintos-Kernel-Monitor.git (fetch)
+origin	https://github.com/hst257/Pintos-Kernel-Monitor.git (push)
+upstream	https://github.com/jhu-cs318/pintos.git (fetch)
+upstream	https://github.com/jhu-cs318/pintos.git (push)
+
+exit_status=0
+
+$ git show-ref --tags baseline-unmodified
+ab699959f0d3eae8e59d8507ae2474a638c3d1d3 refs/tags/baseline-unmodified
+
+exit_status=0
+
+$ git rev-parse baseline-unmodified upstream/master
+ab699959f0d3eae8e59d8507ae2474a638c3d1d3
+ab699959f0d3eae8e59d8507ae2474a638c3d1d3
+
+exit_status=0
+
+$ git ls-remote upstream refs/heads/master
+ab699959f0d3eae8e59d8507ae2474a638c3d1d3	refs/heads/master
+
+exit_status=0
+
+$ git diff --exit-code baseline-unmodified -- src
+
+exit_status=0
+
+
+FINAL SOURCE INTEGRITY VERIFICATION
+$ git status --short --branch
+## main...origin/main
+?? demo_baseline.sh
+?? docs/
+?? evidence/
+exit_status=0
+
+$ git diff --stat
+exit_status=0
+
+$ git diff --exit-code -- src
+exit_status=0
+
+$ git rev-parse HEAD baseline-unmodified
+ab699959f0d3eae8e59d8507ae2474a638c3d1d3
+ab699959f0d3eae8e59d8507ae2474a638c3d1d3
+exit_status=0
+
+$ bash -n demo_baseline.sh
+exit_status=0
+
+All 632 initially tracked src files match their pre-build SHA-256 hashes.

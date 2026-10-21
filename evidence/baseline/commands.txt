@@ -1,0 +1,138 @@
+Phase 1 commands executed; cwd=/home/harshit/OSGroup/OS-Pintos/pintos
+Recorded 2026-10-22T01:00:13.186115+05:30
+
+$ pwd
+exit_status=0
+
+$ git status --short --branch
+exit_status=0
+
+$ git rev-parse HEAD
+exit_status=0
+
+$ git show -s --format=fuller HEAD
+exit_status=0
+
+$ git remote -v
+exit_status=0
+
+$ git show-ref --tags baseline-unmodified
+exit_status=0
+
+$ git rev-parse baseline-unmodified upstream/master
+exit_status=0
+
+$ git ls-remote upstream refs/heads/master
+exit_status=0
+
+$ git diff --exit-code baseline-unmodified -- src
+exit_status=0
+
+$ cat /etc/os-release
+exit_status=0
+
+$ uname -a
+exit_status=0
+
+$ gcc --version
+exit_status=0
+
+$ gcc -dumpmachine
+exit_status=0
+
+$ ld --version
+exit_status=0
+
+$ make --version
+exit_status=0
+
+$ perl -v
+exit_status=0
+
+$ python3 --version
+exit_status=0
+
+$ qemu-system-i386 --version
+exit_status=0
+
+$ dpkg-query -W gcc gcc-multilib libc6-dev-i386 make perl python3 qemu-system-x86 binutils
+exit_status=0
+
+$ perl -c src/utils/pintos
+exit_status=2
+
+$ make -C src/threads -j2
+exit_status=0
+
+cwd=/home/harshit/OSGroup/OS-Pintos/pintos/src/threads/build
+$ timeout --signal=TERM --kill-after=5s 35s /home/harshit/OSGroup/OS-Pintos/pintos/src/utils/pintos --qemu --no-vga -- -q run alarm-single
+exit_status=124
+elapsed_seconds=35.05
+
+cwd=/home/harshit/OSGroup/OS-Pintos/pintos
+$ make -C src/threads -B -j2 'CFLAGS=-m32 -g -msoft-float -O0 -fno-stack-protector -fno-pie -fno-pic'
+exit_status=0
+
+cwd=/home/harshit/OSGroup/OS-Pintos/pintos/src/threads/build
+$ timeout --signal=TERM --kill-after=5s 20s /home/harshit/OSGroup/OS-Pintos/pintos/src/utils/pintos --qemu --no-vga -- -q run alarm-single
+exit_status=0
+
+cwd=/home/harshit/OSGroup/OS-Pintos/pintos
+$ /home/harshit/OSGroup/OS-Pintos/pintos/src/utils/pintos --make-disk=/home/harshit/OSGroup/OS-Pintos/pintos/evidence/baseline/artifacts/baseline-alarm-single.dsk --kernel=/home/harshit/OSGroup/OS-Pintos/pintos/evidence/baseline/artifacts/kernel.bin --loader=/home/harshit/OSGroup/OS-Pintos/pintos/evidence/baseline/artifacts/loader.bin
+exit_status=0
+
+cwd=/home/harshit/OSGroup/OS-Pintos/pintos
+$ /home/harshit/OSGroup/OS-Pintos/pintos/src/utils/pintos-set-cmdline /home/harshit/OSGroup/OS-Pintos/pintos/evidence/baseline/artifacts/baseline-alarm-single.dsk -q run alarm-single
+exit_status=1
+
+cwd=/home/harshit/OSGroup/OS-Pintos/pintos
+$ /home/harshit/OSGroup/OS-Pintos/pintos/src/utils/pintos-set-cmdline /home/harshit/OSGroup/OS-Pintos/pintos/evidence/baseline/artifacts/baseline-alarm-single.dsk -- -q run alarm-single
+exit_status=0
+
+cwd=/home/harshit/OSGroup/OS-Pintos/pintos
+$ file /home/harshit/OSGroup/OS-Pintos/pintos/evidence/baseline/artifacts/kernel.bin /home/harshit/OSGroup/OS-Pintos/pintos/evidence/baseline/artifacts/kernel.o /home/harshit/OSGroup/OS-Pintos/pintos/evidence/baseline/artifacts/loader.bin
+exit_status=0
+
+cwd=/home/harshit/OSGroup/OS-Pintos/pintos
+$ readelf -h /home/harshit/OSGroup/OS-Pintos/pintos/evidence/baseline/artifacts/kernel.bin
+exit_status=0
+
+cwd=/home/harshit/OSGroup/OS-Pintos/pintos
+$ readelf -l /home/harshit/OSGroup/OS-Pintos/pintos/evidence/baseline/artifacts/kernel.bin
+exit_status=0
+
+cwd=/home/harshit/OSGroup/OS-Pintos/pintos
+$ perl -I src src/tests/threads/alarm-single.ck /home/harshit/OSGroup/OS-Pintos/pintos/evidence/baseline/alarm-single src
+exit_status=0
+
+Genuine VGA screenshot validation run; cwd=/home/harshit/OSGroup/OS-Pintos/pintos
+$ qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/home/harshit/OSGroup/OS-Pintos/pintos/evidence/baseline/artifacts/baseline-alarm-single.dsk -snapshot -m 4 -net none -display none -serial stdio -monitor none -no-reboot -qmp unix:/tmp/pintos-baseline-qmp-fb7gj17z/qmp.sock,server=on,wait=off
+QMP screendump captured original VGA framebuffer after Boot complete; lossless PPM-to-PNG conversion.
+QEMU exit_status=99 (expected isa-debug-exit success)
+
+cwd=/home/harshit/OSGroup/OS-Pintos/pintos
+$ git status --short --branch
+## main...origin/main
+?? demo_baseline.sh
+?? docs/
+?? evidence/
+exit_status=0
+
+cwd=/home/harshit/OSGroup/OS-Pintos/pintos
+$ git diff --stat
+exit_status=0
+
+cwd=/home/harshit/OSGroup/OS-Pintos/pintos
+$ git diff --exit-code -- src
+exit_status=0
+
+cwd=/home/harshit/OSGroup/OS-Pintos/pintos
+$ git rev-parse HEAD baseline-unmodified
+ab699959f0d3eae8e59d8507ae2474a638c3d1d3
+ab699959f0d3eae8e59d8507ae2474a638c3d1d3
+exit_status=0
+
+cwd=/home/harshit/OSGroup/OS-Pintos/pintos
+$ bash -n demo_baseline.sh
+exit_status=0
+
