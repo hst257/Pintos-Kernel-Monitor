@@ -99,6 +99,8 @@ struct thread
 #endif
 
     /* Owned by thread.c. */
+    uint64_t cpu_ticks;                /* Lifetime timer samples, including idle. */
+    uint64_t dispatches;               /* Scheduler selections, including self. */
     unsigned magic;                     /* Detects stack overflow. */
   };
 
@@ -112,6 +114,23 @@ void thread_start (void);
 
 void thread_tick (void);
 void thread_print_stats (void);
+
+/* Copies of completed threads contain no pointers into freed thread pages. */
+#define THREAD_MONITOR_CAPACITY 16
+struct thread_monitor_record
+  {
+    tid_t tid;
+    char name[16];
+    int priority;
+    uint64_t cpu_ticks;
+    uint64_t dispatches;
+    enum thread_status status;          /* THREAD_DYING is displayed as DONE. */
+  };
+
+void thread_monitor_current (struct thread_monitor_record *);
+size_t thread_monitor_snapshot (struct thread_monitor_record *, size_t,
+                                uint64_t *overwritten);
+bool thread_monitor_report (void);
 
 typedef void thread_func (void *aux);
 tid_t thread_create (const char *name, int priority, thread_func *, void *);

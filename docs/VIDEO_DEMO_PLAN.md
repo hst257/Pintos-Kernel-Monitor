@@ -73,3 +73,60 @@ Prepare one continuous-take command sequence with no code edits, installation,
 branch changes, or environment changes during recording. Allocate roughly
 four minutes for methodology, workload results, challenges, and conclusions.
 No Phase 2 demonstration script or final narration has been created yet.
+
+
+# Phase 2 verified update
+
+The earlier reserved sections can now use the completed Thread Monitor v1
+implementation. This update is a demonstration plan, not final narration or
+the Phase 3 report/script. Keep the total target near eight minutes, with
+approximately four minutes for each presenter.
+
+## Person 1: setup and implementation
+
+Use `bash demo_baseline.sh` for the original kernel, then explain the actual
+changes in `src/threads/thread.h` and `thread.c`: two 64-bit counters,
+`thread_tick()` accounting, one dispatch increment per `schedule()` selection,
+and the 16-entry copied completion ring in `thread_exit()`. Explain the
+bootstrap main count, same-thread reselection, and reporting after safe
+snapshots. `timer.c` and `switch.S` are background context and were not edited.
+Show the genuine table with:
+
+```bash
+cd /home/harshit/OSGroup/OS-Pintos/pintos
+bash demo_modified.sh
+```
+
+No build, installation, branch change, or code edit is needed during the
+recording. State that ticks are samples, rather than exact execution time.
+The initial verified run showed worker ticks 21/9/3 and dispatches 7/42/2;
+recognize the real live values rather than expecting those exact numbers.
+
+## Person 2: one continuous-take testing sequence
+
+Run this single prepared command from the project root:
+
+```bash
+bash demo_modified.sh --regressions
+```
+
+It runs the real CPU-monitor workload, bounded-history test, alarm-single,
+alarm-simultaneous scheduling regression, and alarm-zero. Each run checks its
+actual Perl result, saves output under `evidence/demo-runs/`, and prints PASS
+only after normal completion. The prepared sequence was executed successfully.
+
+Explain what each invariant establishes: workers have unique created IDs,
+per-thread dispatches, no charged ticks while semaphore-blocked, monotonic
+counters, and exactly one completion row after each worker exits. The overflow
+test retains the newest 16 of 19 records and checks bounded snapshots.
+
+Mention the honest limitation: priority-fifo fails identically on both the
+original and modified kernel because priority scheduling is unfinished in
+the supplied distribution. It is excluded from the supported PASS sequence;
+both actual outputs are in `evidence/modified/tests/`. Do not claim that all
+Pintos priority/MLFQS assignment tests pass.
+
+Conclude the testing portion with timer sampling limits, the fixed 16-record
+capacity, and unchanged round-robin policy. Full implementation details,
+results, and genuine screenshots are in `docs/KERNEL_MODIFICATION.md` and
+`evidence/modified/`. The final narration and report remain for Phase 3.

@@ -11,6 +11,8 @@ struct test
 
 static const struct test tests[] = 
   {
+    {"cpu-monitor", test_cpu_monitor},
+    {"monitor-overflow", test_monitor_overflow},
     {"alarm-single", test_alarm_single},
     {"alarm-multiple", test_alarm_multiple},
     {"alarm-simultaneous", test_alarm_simultaneous},

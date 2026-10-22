@@ -8,6 +8,7 @@
 #include "threads/interrupt.h"
 #include "threads/intr-stubs.h"
 #include "threads/palloc.h"
+#include "threads/malloc.h"
 #include "threads/switch.h"
 #include "threads/synch.h"
 #include "threads/vaddr.h"
@@ -50,6 +51,15 @@ static long long idle_ticks;    /* # of timer ticks spent idle. */
 static long long kernel_ticks;  /* # of timer ticks in kernel threads. */
 static long long user_ticks;    /* # of timer ticks in user programs. */
 
+/* Bounded completion history. Access only with interrupts disabled. */
+static struct thread_monitor_record completed[THREAD_MONITOR_CAPACITY];
+static size_t completed_next;
+static size_t completed_count;
+static uint64_t completed_overwritten;
+
+static void monitor_copy (struct thread_monitor_record *, struct thread *);
+static void monitor_complete (struct thread *);
+
 /* Scheduling. */
 #define TIME_SLICE 4            /* # of timer ticks to give each thread. */
 static unsigned thread_ticks;   /* # of timer ticks since last yield. */
@@ -89,6 +99,7 @@ thread_init (void)
 {
   ASSERT (intr_get_level () == INTR_OFF);
 
+  ASSERT (sizeof (struct thread) < 1024);
   lock_init (&tid_lock);
   list_init (&ready_list);
   list_init (&all_list);
@@ -98,6 +109,7 @@ thread_init (void)
   init_thread (initial_thread, "main", PRI_DEFAULT);
   initial_thread->status = THREAD_RUNNING;
   initial_thread->tid = allocate_tid ();
+  initial_thread->dispatches = 1;       /* Bootstrap execution has no schedule(). */
 }
 
 /* Starts preemptive thread scheduling by enabling interrupts.
@@ -123,6 +135,9 @@ void
 thread_tick (void) 
 {
   struct thread *t = thread_current ();
+
+  /* Attribute this timer sample to the thread actually interrupted. */
+  t->cpu_ticks++;
 
   /* Update statistics. */
   if (t == idle_thread)
@@ -290,6 +305,7 @@ thread_exit (void)
      and schedule another process.  That process will destroy us
      when it calls thread_schedule_tail(). */
   intr_disable ();
+  monitor_complete (thread_current ());
   list_remove (&thread_current()->allelem);
   thread_current ()->status = THREAD_DYING;
   schedule ();
@@ -462,6 +478,8 @@ init_thread (struct thread *t, const char *name, int priority)
   strlcpy (t->name, name, sizeof t->name);
   t->stack = (uint8_t *) t + PGSIZE;
   t->priority = priority;
+  t->cpu_ticks = 0;
+  t->dispatches = 0;
   t->magic = THREAD_MAGIC;
 
   old_level = intr_disable ();
@@ -560,6 +578,7 @@ schedule (void)
   ASSERT (cur->status != THREAD_RUNNING);
   ASSERT (is_thread (next));
 
+  next->dispatches++;                 /* A self-selection is also a dispatch. */
   if (cur != next)
     prev = switch_threads (cur, next);
   thread_schedule_tail (prev);
@@ -582,3 +601,101 @@ allocate_tid (void)
 /* Offset of `stack' member within `struct thread'.
    Used by switch.S, which can't figure it out on its own. */
 uint32_t thread_stack_ofs = offsetof (struct thread, stack);
+
+/* All multiword counter reads/writes are serialized on this uniprocessor
+   by interrupt exclusion. Never print, allocate, or block in these helpers. */
+static void
+monitor_copy (struct thread_monitor_record *record, struct thread *t)
+{
+  ASSERT (intr_get_level () == INTR_OFF);
+  record->tid = t->tid;
+  strlcpy (record->name, t->name, sizeof record->name);
+  record->priority = t->priority;
+  record->cpu_ticks = t->cpu_ticks;
+  record->dispatches = t->dispatches;
+  record->status = t->status;
+}
+
+static void
+monitor_complete (struct thread *t)
+{
+  monitor_copy (&completed[completed_next], t);
+  completed[completed_next].status = THREAD_DYING;
+  completed_next = (completed_next + 1) % THREAD_MONITOR_CAPACITY;
+  if (completed_count < THREAD_MONITOR_CAPACITY)
+    completed_count++;
+  else
+    completed_overwritten++;           /* Oldest record is replaced. */
+}
+
+/* Snapshot the calling thread without exposing another thread's lifetime. */
+void
+thread_monitor_current (struct thread_monitor_record *record)
+{
+  enum intr_level old_level;
+  ASSERT (record != NULL);
+  old_level = intr_disable ();
+  monitor_copy (record, thread_current ());
+  intr_set_level (old_level);
+}
+
+/* Copy the newest records that fit, in completion order. The caller owns
+   the destination. No internal pointers escape the interrupt-off region. */
+size_t
+thread_monitor_snapshot (struct thread_monitor_record *records, size_t capacity,
+                         uint64_t *overwritten)
+{
+  enum intr_level old_level;
+  size_t count, first, i;
+
+  ASSERT (records != NULL || capacity == 0);
+  old_level = intr_disable ();
+  count = completed_count < capacity ? completed_count : capacity;
+  first = (completed_next + THREAD_MONITOR_CAPACITY - count)
+          % THREAD_MONITOR_CAPACITY;
+  for (i = 0; i < count; i++)
+    records[i] = completed[(first + i) % THREAD_MONITOR_CAPACITY];
+  if (overwritten != NULL)
+    *overwritten = completed_overwritten;
+  intr_set_level (old_level);
+  return count;
+}
+
+/* Only explicit diagnostics print a table. Allocation is bounded and occurs
+   in ordinary thread context, outside the scheduler/interrupt critical path. */
+bool
+thread_monitor_report (void)
+{
+  struct thread_monitor_record *records;
+  uint64_t overwritten;
+  size_t count, i, j;
+
+  ASSERT (!intr_context ());
+  ASSERT (intr_get_level () == INTR_ON);
+  records = malloc (THREAD_MONITOR_CAPACITY * sizeof *records);
+  if (records == NULL)
+    return false;
+  count = thread_monitor_snapshot (records, THREAD_MONITOR_CAPACITY, &overwritten);
+  /* Sort copied data by TID, with interrupts enabled. */
+  for (i = 1; i < count; i++)
+    {
+      struct thread_monitor_record value = records[i];
+      for (j = i; j > 0 && records[j - 1].tid > value.tid; j--)
+        records[j] = records[j - 1];
+      records[j] = value;
+    }
+  printf ("\n========== PINTOS THREAD MONITOR ==========\n");
+  printf ("TID   THREAD NAME      PRIORITY CPU TICKS    DISPATCHES   STATUS\n");
+  printf ("--------------------------------------------------------------\n");
+  for (i = 0; i < count; i++)
+    printf ("%-5d %-16s %-8d %-12llu %-12llu DONE\n",
+            records[i].tid, records[i].name, records[i].priority,
+            (unsigned long long) records[i].cpu_ticks,
+            (unsigned long long) records[i].dispatches);
+  printf ("Records: %u/%u; overwritten: %llu\n", (unsigned) count,
+          THREAD_MONITOR_CAPACITY, (unsigned long long) overwritten);
+  printf ("CPU ticks = timer samples; dispatches include same-thread reselection.\n");
+  printf ("==============================================================\n\n");
+  free (records);
+  return true;
+}
