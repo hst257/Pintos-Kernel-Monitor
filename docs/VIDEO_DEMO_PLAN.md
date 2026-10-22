@@ -130,3 +130,16 @@ Conclude the testing portion with timer sampling limits, the fixed 16-record
 capacity, and unchanged round-robin policy. Full implementation details,
 results, and genuine screenshots are in `docs/KERNEL_MODIFICATION.md` and
 `evidence/modified/`. The final narration and report remain for Phase 3.
+
+
+# Phase 3 final recording update
+
+Use the completed scripts in `VIDEO_PERSON1.md` and `VIDEO_PERSON2.md` for the
+balanced four-minute sections. Person 1 runs `bash demo_baseline.sh --video`
+and uses the listed source locations. Person 2 prepares his own clone with
+`bash setup_person2.sh` before recording, then runs `bash demo_person2.sh`.
+The portable demo uses the same live runner as the modified demo and needs no
+legacy evidence archives. All five supported tests execute live; the known
+priority-fifo failure remains explicitly documented. No kernel changes were
+made during finalization. Publication and the second laptop's actual setup
+verification remain manual prerequisites, not completed cross-laptop evidence.

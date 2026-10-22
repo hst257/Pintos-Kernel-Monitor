@@ -1,0 +1,7 @@
+# Reproducible outputs; retained locally, never required by Person 2.
+/generated/
+/evidence/demo-runs/
+/evidence/modified/
+/evidence/finalization/
+/tools/__pycache__/
+# Existing tracked baseline evidence is intentionally preserved.

@@ -3,8 +3,8 @@ set -euo pipefail
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 evidence="$root/evidence/baseline"
 mode=${1:---live}
-if [[ $# -gt 1 || ( "$mode" != --live && "$mode" != --archive ) ]]; then
-  printf 'Usage: bash demo_baseline.sh [--live|--archive]\n' >&2
+if [[ $# -gt 1 || ( "$mode" != --live && "$mode" != --archive && "$mode" != --video ) ]]; then
+  printf 'Usage: bash demo_baseline.sh [--live|--archive|--video]\n' >&2
   exit 2
 fi
 cd "$evidence"
@@ -13,10 +13,16 @@ cat revision.txt
 printf '\nChecking archived evidence and artifact hashes...\n'
 sha256sum --check --quiet SHA256SUMS
 printf '\nARCHIVED BUILD EVIDENCE (this is not a live rebuild)\n'
-tail -n 10 build.log
+if [[ "$mode" == --video ]]; then
+  grep 'Compatibility build exit_status=' build.log
+else
+  tail -n 10 build.log
+fi
 file artifacts/kernel.bin artifacts/loader.bin
 printf '\nARCHIVED BOOT EVIDENCE (this is not a live boot)\n'
-grep -E 'Pintos booting|Boot complete|product=|Execution of|Powering off' boot.log
+if [[ "$mode" != --video ]]; then
+  grep -E 'Pintos booting|Boot complete|product=|Execution of|Powering off' boot.log
+fi
 printf 'Upstream alarm-single checker: '
 cat alarm-single.result
 if [[ "$mode" == --archive ]]; then
